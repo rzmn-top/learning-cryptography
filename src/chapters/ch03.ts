@@ -13,6 +13,7 @@ import { initAsidePanel } from '../ui/aside-panel';
 import { mountAvalanche } from '../widgets/avalanche';
 import { mountEcbCtr } from '../widgets/ecb-ctr';
 import { mountBirthday } from '../widgets/birthday';
+import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
   renderMath(document.body);
@@ -21,6 +22,7 @@ const main = (): void => {
     avalanche: mountAvalanche,
     'ecb-ctr': mountEcbCtr,
     birthday: mountBirthday,
+    hero: mountHero,
   });
 };
 

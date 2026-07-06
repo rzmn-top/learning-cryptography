@@ -126,6 +126,20 @@ h3 {
   transform: rotate(-1.2deg);
 }
 
+/* процедурная pixel-обложка главы */
+.hero {
+  margin: 1.2rem 0 0.4rem;
+}
+
+.hero canvas {
+  display: block;
+  width: 100%;
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-punk);
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
 .chapter-epigraph {
   font-style: italic;
   color: var(--ink-soft);

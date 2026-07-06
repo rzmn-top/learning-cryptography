@@ -13,6 +13,7 @@ import { initAsidePanel } from '../ui/aside-panel';
 import { mountEuclidTable } from '../widgets/euclid-table';
 import { mountCrtGrid } from '../widgets/crt-grid';
 import { mountPhiCalc } from '../widgets/phi-calc';
+import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
   renderMath(document.body);
@@ -21,6 +22,7 @@ const main = (): void => {
     'euclid-table': mountEuclidTable,
     'crt-grid': mountCrtGrid,
     'phi-calc': mountPhiCalc,
+    hero: mountHero,
   });
 };
 

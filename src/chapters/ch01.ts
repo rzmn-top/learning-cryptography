@@ -12,6 +12,7 @@ import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
 import { mountCayleyTable } from '../widgets/cayley-table';
 import { mountOrbit } from '../widgets/orbit';
+import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
   renderMath(document.body);
@@ -19,6 +20,7 @@ const main = (): void => {
   mountAll({
     'cayley-table': mountCayleyTable,
     orbit: mountOrbit,
+    hero: mountHero,
   });
 };
 
