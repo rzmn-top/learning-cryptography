@@ -7,3 +7,9 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/index-page.css';
+
+import { mountHeroStrip } from './widgets/hero';
+
+document
+  .querySelectorAll<HTMLElement>('[data-widget="hero-strip"]')
+  .forEach((root) => mountHeroStrip(root));

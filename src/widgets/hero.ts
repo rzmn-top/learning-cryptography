@@ -566,31 +566,33 @@ const paintNoise: Painter = (ctx, rnd) => {
 };
 
 /**
- * Коллаж всех глав для оглавления: 2 ряда × 5 тайлов. При загрузке тайлы —
- * шум, «расшифровывающийся» слева направо; hover перегенерирует.
+ * Лента глав для оглавления: один ряд из 5 тайлов (data-row="1" — главы
+ * 1–5, data-row="2" — главы 6–10). Декрипт-анимация идёт постоянно:
+ * после стартового проявления по ленте бесконечно ходит волна —
+ * очередной тайл рассыпается в шум и собирается заново с новым сидом.
  */
-export const mountHeroCollage = (root: HTMLElement): void => {
-  const cols = 5;
-  const rows = 2;
+export const mountHeroStrip = (root: HTMLElement): void => {
+  const rowIdx = root.dataset['row'] === '2' ? 1 : 0;
+  const chapters = COLLAGE_ORDER.slice(rowIdx * 5, rowIdx * 5 + 5);
+  const cols = chapters.length;
   const LW = cols * W + (cols - 1) * GAP;
-  const LH = rows * H + (rows - 1) * GAP;
   const SC = 4;
 
   const canvas = h('canvas', {
     width: String(LW * SC),
-    height: String(LH * SC),
+    height: String(H * SC),
     role: 'img',
-    'aria-label': 'Криптография: обложки глав курса',
+    'aria-label': `Обложки глав ${rowIdx === 0 ? '1–5' : '6–10'}`,
   });
   const off = document.createElement('canvas');
   off.width = LW;
-  off.height = LH;
+  off.height = H;
   const tile = document.createElement('canvas');
   tile.width = W;
   tile.height = H;
 
-  let seed = 0xa11a5;
-  let resolved = 0; // сколько тайлов уже «расшифровано»
+  const seeds = chapters.map((_, i) => 0xa11a5 + (rowIdx * 5 + i) * 0x9e37);
+  let resolved = 0; // стартовое проявление слева направо
 
   const draw = (): void => {
     const octx = off.getContext('2d');
@@ -598,34 +600,41 @@ export const mountHeroCollage = (root: HTMLElement): void => {
     const ctx = canvas.getContext('2d');
     if (octx === null || tctx === null || ctx === null) return;
     octx.fillStyle = C.ink;
-    octx.fillRect(0, 0, LW, LH);
-    COLLAGE_ORDER.forEach((chapter, i) => {
-      const painter = i < resolved ? painters[chapter] : paintNoise;
+    octx.fillRect(0, 0, LW, H);
+    chapters.forEach((chapter, i) => {
+      const isNoise = i >= resolved;
+      const painter = isNoise ? paintNoise : painters[chapter];
       if (painter === undefined) return;
-      painter(tctx, mulberry32(seed + i * 0x9e37));
-      octx.drawImage(tile, (i % cols) * (W + GAP), Math.floor(i / cols) * (H + GAP));
+      const seed = isNoise ? Math.floor(Math.random() * 0xffffffff) : (seeds[i] ?? 0);
+      painter(tctx, mulberry32(seed));
+      octx.drawImage(tile, i * (W + GAP), 0);
     });
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
   };
 
-  // интро: шум проявляется в обложки по одному тайлу
+  // одновременная перерисовка: новые сиды у всех тайлов, без шумовой фазы
+  const step = (): void => {
+    for (let i = 0; i < cols; i += 1) {
+      seeds[i] = Math.floor(Math.random() * 0xffffffff);
+    }
+    draw();
+  };
+
+  // интро с шумом — только при загрузке; дальше картинки меняются мгновенно
   draw();
   const intro = window.setInterval(() => {
     resolved += 1;
     draw();
-    if (resolved >= COLLAGE_ORDER.length) window.clearInterval(intro);
-  }, 130);
-
-  attachHoverRegen(canvas, () => {
-    resolved = COLLAGE_ORDER.length;
-    seed = Math.floor(Math.random() * 0xffffffff);
-    draw();
-  });
+    if (resolved >= cols) {
+      window.clearInterval(intro);
+      window.setInterval(step, 1000);
+    }
+  }, 250);
 
   root.append(canvas);
-  root.classList.add('hero');
+  root.classList.add('hero', 'hero--strip');
 };
 
 /** Пока курсор над обложкой — перегенерация каждые 330 мс. */

@@ -142,6 +142,15 @@ h3 {
   cursor: pointer;
 }
 
+/* ленты на главной: постоянная анимация, компактные вертикальные отступы */
+.hero--strip {
+  margin: 0.5rem 0;
+}
+
+.hero--strip canvas {
+  cursor: default;
+}
+
 .chapter-epigraph {
   font-style: italic;
   color: var(--ink-soft);
