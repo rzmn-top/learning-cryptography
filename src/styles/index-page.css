@@ -12,6 +12,7 @@
   margin-bottom: 0.6rem;
   background: var(--paper);
   counter-increment: ch;
+  min-width: 0;
 }
 
 .toc a {
@@ -21,6 +22,7 @@
   padding: 0.7rem 1rem;
   text-decoration: none;
   color: var(--ink);
+  min-width: 0;
 }
 
 .toc a::before {
@@ -38,6 +40,7 @@
 
 .toc .toc-title {
   font-weight: 700;
+  min-width: 0;
 }
 
 .toc .toc-sub {
@@ -46,6 +49,7 @@
   color: var(--ink-soft);
   margin-left: auto;
   text-align: right;
+  min-width: 0;
 }
 
 .toc li.pending {
@@ -57,4 +61,28 @@
   background: var(--paper);
   box-shadow: none;
   cursor: default;
+}
+
+@media (max-width: 44rem) {
+  .toc a {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 0.2rem 0.7rem;
+    align-items: start;
+  }
+
+  .toc a::before {
+    grid-row: 1 / span 2;
+  }
+
+  .toc .toc-title,
+  .toc .toc-sub {
+    grid-column: 2;
+    overflow-wrap: anywhere;
+  }
+
+  .toc .toc-sub {
+    margin-left: 0;
+    text-align: left;
+  }
 }

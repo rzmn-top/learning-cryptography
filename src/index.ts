@@ -7,8 +7,3 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/index-page.css';
-
-import { mountHeroCollage } from './widgets/hero';
-
-const collageRoot = document.querySelector<HTMLElement>('[data-widget="hero-collage"]');
-if (collageRoot !== null) mountHeroCollage(collageRoot);

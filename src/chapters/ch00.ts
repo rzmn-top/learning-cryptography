@@ -12,7 +12,6 @@ import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
 import { initKeyboardNav } from '../ui/keyboard-nav';
 import { mountCourseMap } from '../widgets/course-map';
-import { mountTimeline } from '../widgets/timeline';
 import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
@@ -21,7 +20,6 @@ const main = (): void => {
   initKeyboardNav();
   mountAll({
     'course-map': mountCourseMap,
-    timeline: mountTimeline,
     hero: mountHero,
   });
 };
