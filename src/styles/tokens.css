@@ -19,11 +19,9 @@
   --stamp-red: #d43318;
 
   /* типографика */
-  /* Ruslan Display — кириллический «блэклеттер» (старославянский display),
-     UnifrakturMaguntia подхватывает чисто латинские заголовки */
   --font-body: 'STIX Two Text', Georgia, serif;
-  --font-display: 'UnifrakturMaguntia', 'Ruslan Display', serif;
-  /* VT323 — пиксельная латиница; кириллица падает в PT Mono (умышленный zine-микс) */
+  --font-display: 'STIX Two Text', Georgia, serif;
+  /* VT323 — пиксельная латиница; кириллица падает в PT Mono */
   --font-pixel: 'VT323', 'PT Mono', monospace;
 
   --size-body: 1.1rem;

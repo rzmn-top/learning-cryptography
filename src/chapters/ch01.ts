@@ -1,8 +1,6 @@
 import '@fontsource/stix-two-text/400.css';
 import '@fontsource/stix-two-text/400-italic.css';
 import '@fontsource/stix-two-text/700.css';
-import '@fontsource/unifrakturmaguntia';
-import '@fontsource/ruslan-display';
 import '@fontsource/vt323';
 import '@fontsource/pt-mono';
 import '../styles/tokens.css';
@@ -11,14 +9,12 @@ import '../styles/components.css';
 
 import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
-import { mountClock } from '../widgets/clock';
 import { mountCayleyTable } from '../widgets/cayley-table';
 import { mountOrbit } from '../widgets/orbit';
 
 const main = (): void => {
   renderMath(document.body);
   mountAll({
-    clock: mountClock,
     'cayley-table': mountCayleyTable,
     orbit: mountOrbit,
   });
