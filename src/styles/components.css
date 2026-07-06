@@ -211,6 +211,11 @@
 
 /* ---- панель доказательств (split screen) ---- */
 
+/* атрибут hidden проигрывает display: flex — восстанавливаем его приоритет */
+.proof-panel[hidden] {
+  display: none;
+}
+
 .proof-panel {
   border: 2px solid var(--ink);
   background: var(--paper);
