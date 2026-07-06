@@ -44,27 +44,62 @@ const pointOnCurve = (c: CurveR, x: number, upper: boolean): PointR => {
   return { x, y };
 };
 
+/** Ближайший к x аргумент, где кривая определена (rhs ≥ 0). */
+const projectX = (c: CurveR, x: number): number => {
+  if (yAt(c, x).length > 0) return Math.max(-VIEW, Math.min(VIEW, x));
+  for (let d = 0.03; d < 2 * VIEW; d += 0.03) {
+    if (yAt(c, x + d).length > 0) return Math.min(VIEW, x + d);
+    if (yAt(c, x - d).length > 0) return Math.max(-VIEW, x - d);
+  }
+  return x;
+};
+
 const drawCurve = (ctx: CanvasRenderingContext2D, c: CurveR): void => {
-  // две ветви (верхняя +y, нижняя −y), строим по x с шагом
-  for (const sign of [1, -1]) {
-    ctx.beginPath();
-    let started = false;
-    for (let sx = 0; sx <= SIZE; sx += 1) {
-      const x = fromScreenX(sx);
-      const ys = yAt(c, x);
-      if (ys.length === 0) {
-        started = false;
-        continue;
-      }
-      const y = sign > 0 ? Math.max(...ys) : Math.min(...ys);
-      const [px, py] = toScreen(x, y);
-      if (!started) {
-        ctx.moveTo(px, py);
-        started = true;
-      } else ctx.lineTo(px, py);
+  // Кривая рисуется по связным сегментам, где rhs = x³+ax+b ≥ 0.
+  // Внутри сегмента строим замкнутый контур: верхняя ветвь слева-направо,
+  // затем нижняя справа-налево. На корнях (rhs = 0) ветви смыкаются на оси x —
+  // это убирает разрыв у y ≈ 0.
+  const rhsOf = (x: number): number => x ** 3 + c.a * x + c.b;
+  const STEP = (2 * VIEW) / (SIZE * 3); // мельче пикселя — гладко у поворотов
+
+  interface Seg { readonly xs: number[]; readonly leftRoot: boolean; readonly rightRoot: boolean; }
+  const segments: Seg[] = [];
+  let cur: number[] | null = null;
+  for (let x = -VIEW; x <= VIEW + STEP; x += STEP) {
+    const pos = rhsOf(x) >= 0;
+    if (pos && cur === null) {
+      cur = [];
+      // левая граница — корень, если сегмент начался не от края экрана
+      segments.push({ xs: cur, leftRoot: x > -VIEW + STEP, rightRoot: false });
     }
-    ctx.strokeStyle = CSS.ink;
-    ctx.lineWidth = 2;
+    if (pos && cur !== null) cur.push(x);
+    if (!pos && cur !== null) {
+      const last = segments[segments.length - 1];
+      if (last !== undefined) (last as { rightRoot: boolean }).rightRoot = true;
+      cur = null;
+    }
+  }
+
+  ctx.strokeStyle = CSS.ink;
+  ctx.lineWidth = 2;
+  for (const seg of segments) {
+    if (seg.xs.length < 2) continue;
+    ctx.beginPath();
+    // верхняя ветвь L→R
+    seg.xs.forEach((x, i) => {
+      const y = Math.sqrt(Math.max(0, rhsOf(x)));
+      const [px, py] = toScreen(x, y);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    });
+    // нижняя ветвь R→L
+    for (let i = seg.xs.length - 1; i >= 0; i -= 1) {
+      const x = seg.xs[i] as number;
+      const y = -Math.sqrt(Math.max(0, rhsOf(x)));
+      const [px, py] = toScreen(x, y);
+      ctx.lineTo(px, py);
+    }
+    if (seg.leftRoot) ctx.closePath(); // овал / левое смыкание на корне
     ctx.stroke();
   }
 };
@@ -171,8 +206,13 @@ export const mountEcAdd = (root: HTMLElement): void => {
       }
     }
 
-    dot(ctx, P, CSS.acid, 'P');
-    dot(ctx, Q, state.px === state.qx && state.pUpper === state.qUpper ? CSS.acid : CSS.acid, 'Q');
+    const isDouble = Math.abs(state.px - state.qx) < 1e-6 && state.pUpper === state.qUpper;
+    if (isDouble) {
+      dot(ctx, P, CSS.acid, 'P = Q');
+    } else {
+      dot(ctx, P, CSS.acid, 'P');
+      dot(ctx, Q, CSS.acid, 'Q');
+    }
     dot(ctx, geo.result, CSS.pink, 'R = P+Q');
   };
 
@@ -212,15 +252,7 @@ export const mountEcAdd = (root: HTMLElement): void => {
     const [mx, my] = pointerXY(e);
     const x = Math.max(-VIEW, Math.min(VIEW, fromScreenX(mx)));
     const worldY = VIEW - (my / SIZE) * 2 * VIEW;
-    // ближайший допустимый x, где кривая определена
-    let vx = x;
-    if (yAt(state.curve, vx).length === 0) {
-      for (let d = 0; d < 200; d += 1) {
-        const step = d * 0.03;
-        if (yAt(state.curve, x + step).length > 0) { vx = x + step; break; }
-        if (yAt(state.curve, x - step).length > 0) { vx = x - step; break; }
-      }
-    }
+    const vx = projectX(state.curve, x);
     const upper = worldY >= 0;
     state = state.dragging === 'P'
       ? { ...state, px: vx, pUpper: upper }
@@ -262,7 +294,9 @@ export const mountEcAdd = (root: HTMLElement): void => {
         {
           onchange: (e: Event) => {
             const [a, b] = (e.target as HTMLSelectElement).value.split(',').map(Number);
-            state = { ...state, curve: { a: a ?? -1, b: b ?? 3 } };
+            const curve: CurveR = { a: a ?? -1, b: b ?? 3 };
+            // перенести точки на допустимые x новой кривой
+            state = { ...state, curve, px: projectX(curve, state.px), qx: projectX(curve, state.qx) };
             redraw();
             updateStatus();
           },
