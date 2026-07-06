@@ -139,6 +139,42 @@
   border-color: var(--acid-deep);
 }
 
+/* ---- ссылки на определения (термин использован до определения) ---- */
+
+.term {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dashed var(--violet);
+}
+
+.term::after {
+  content: '↓';
+  font-family: var(--font-pixel);
+  font-size: 0.75em;
+  color: var(--violet);
+  vertical-align: super;
+  margin-left: 1px;
+}
+
+.term:hover {
+  background: #e3d1ff;
+  color: inherit;
+}
+
+/* подсветка цели перехода */
+[id]:target {
+  animation: target-flash 1.6s ease-out 1;
+}
+
+@keyframes target-flash {
+  0% {
+    background: var(--acid);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
 /* ---- кликабельные утверждения (claims) ---- */
 
 .claim {
