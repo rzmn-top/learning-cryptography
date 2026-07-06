@@ -1,0 +1,11 @@
+import '@fontsource/stix-two-text/400.css';
+import '@fontsource/stix-two-text/400-italic.css';
+import '@fontsource/stix-two-text/700.css';
+import '@fontsource/unifrakturmaguntia';
+import '@fontsource/ruslan-display';
+import '@fontsource/vt323';
+import '@fontsource/pt-mono';
+import './styles/tokens.css';
+import './styles/base.css';
+import './styles/components.css';
+import './styles/index-page.css';

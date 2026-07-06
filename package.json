@@ -1,0 +1,31 @@
+{
+  "name": "crypto-course",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "postinstall": "node scripts/ensure-platform-deps.mjs"
+  },
+  "dependencies": {
+    "@fontsource/pt-mono": "^5.2.8",
+    "@fontsource/ruslan-display": "^5.2.7",
+    "@fontsource/stix-two-text": "^5.1.0",
+    "@fontsource/unifrakturmaguntia": "^5.1.0",
+    "@fontsource/vt323": "^5.1.0",
+    "katex": "^0.16.11"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.7",
+    "@types/node": "^26.1.0",
+    "typescript": "^5.6.0",
+    "vite": "^5.4.0"
+  },
+  "optionalDependencies": {
+    "@esbuild/darwin-arm64": "^0.21.5",
+    "@rollup/rollup-darwin-arm64": "^4.62.2"
+  }
+}

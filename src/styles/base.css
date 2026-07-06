@@ -1,0 +1,231 @@
+/* ============================================================
+   База: бумага, сетка, типографика.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 17px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  background-color: var(--paper);
+  /* dotted grid — миллиметровка, чуть заметная */
+  background-image: radial-gradient(var(--rule) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* ---- каркас страницы: текст + колонка маргиналий ---- */
+
+.page {
+  max-width: calc(var(--measure) + var(--margin-col) + 4rem);
+  margin: 0 auto;
+  padding: 2rem 1.5rem 6rem;
+}
+
+.prose {
+  max-width: var(--measure);
+  background: var(--paper);
+  outline: 1px solid var(--rule);
+  padding: 3rem clamp(1.5rem, 5vw, 4rem) 4rem;
+  position: relative;
+}
+
+p {
+  margin: 0 0 1em;
+  text-align: justify;
+  hyphens: auto;
+}
+
+a {
+  color: var(--violet);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+strong {
+  font-weight: 700;
+}
+
+/* ---- заголовки ---- */
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  line-height: 1.05;
+  margin: 0.5rem 0 1rem;
+  letter-spacing: 0.01em;
+}
+
+h2 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.55rem;
+  margin: 2.8em 0 0.8em;
+  padding-top: 0.6em;
+  border-top: 3px solid var(--ink);
+  position: relative;
+}
+
+h2 .secno {
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  color: var(--pink);
+  margin-right: 0.5em;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 2em 0 0.6em;
+}
+
+/* глитч на hover заголовка главы */
+h1:hover {
+  text-shadow:
+    2px 0 var(--pink),
+    -2px 0 var(--acid);
+}
+
+/* ---- шапка главы ---- */
+
+.chapter-head {
+  margin-bottom: 3rem;
+}
+
+.chapter-no {
+  font-family: var(--font-pixel);
+  font-size: 1.3rem;
+  color: var(--paper);
+  background: var(--ink);
+  display: inline-block;
+  padding: 0.15em 0.7em;
+  transform: rotate(-1.2deg);
+}
+
+.chapter-epigraph {
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 30rem;
+  margin-top: 1rem;
+  border-left: 3px solid var(--pink);
+  padding-left: 1rem;
+  text-align: left;
+}
+
+/* ---- ASCII-разделитель ---- */
+
+.divider {
+  font-family: var(--font-pixel);
+  color: var(--ink-soft);
+  text-align: center;
+  letter-spacing: 0.3em;
+  margin: 3rem 0;
+  user-select: none;
+}
+
+/* ---- маргиналии ---- */
+
+.margin-note {
+  font-family: var(--font-pixel);
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--rule);
+  padding-top: 0.4em;
+}
+
+@media (min-width: 74rem) {
+  .margin-note {
+    float: right;
+    clear: right;
+    width: var(--margin-col);
+    margin-right: calc(-1 * var(--margin-col) - 3rem);
+    margin-top: 0.2em;
+    transform: rotate(0.4deg);
+  }
+}
+
+@media (max-width: 73.99rem) {
+  .margin-note {
+    display: block;
+    max-width: 24rem;
+    margin: 1em 0;
+    background: var(--paper-deep);
+    padding: 0.5em 0.8em;
+  }
+}
+
+/* ---- код и inline-math не трогаем: KaTeX сам ---- */
+
+code {
+  font-family: var(--font-pixel);
+  font-size: 1.05em;
+  background: var(--paper-deep);
+  padding: 0 0.3em;
+}
+
+/* ---- навигация ---- */
+
+.top-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  font-family: var(--font-pixel);
+  font-size: 1.15rem;
+  margin-bottom: 2.5rem;
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 0.1em 0.6em;
+  background: var(--paper);
+}
+
+.top-nav a:hover {
+  background: var(--acid);
+  box-shadow: var(--shadow-punk);
+}
+
+.top-nav .brand {
+  color: var(--pink);
+  border: none;
+  padding: 0;
+}
+
+.chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4rem;
+  font-family: var(--font-pixel);
+  font-size: 1.15rem;
+}
+
+.chapter-nav a {
+  text-decoration: none;
+  border: 1px solid var(--ink);
+  padding: 0.3em 0.9em;
+  color: var(--ink);
+}
+
+.chapter-nav a:hover {
+  background: var(--pink);
+  color: var(--paper);
+  box-shadow: var(--shadow-punk);
+}

@@ -1,0 +1,35 @@
+/* ============================================================
+   Дизайн-токены. Концепция: «arXiv-препринт, захваченный нет-панком».
+   База — бумага и серифы; панк — на полях, в заголовках и штампах.
+   ============================================================ */
+
+:root {
+  /* бумага и чернила */
+  --paper: #f4efe2;
+  --paper-deep: #ece5d3;
+  --ink: #16130e;
+  --ink-soft: #4c463b;
+  --rule: #c9c0aa; /* линейки, рамки */
+
+  /* панк-акценты */
+  --acid: #b8e600; /* кислотный зелёный */
+  --acid-deep: #7da300;
+  --pink: #ff2f92; /* hot pink */
+  --violet: #6a1fd0;
+  --stamp-red: #d43318;
+
+  /* типографика */
+  /* Ruslan Display — кириллический «блэклеттер» (старославянский display),
+     UnifrakturMaguntia подхватывает чисто латинские заголовки */
+  --font-body: 'STIX Two Text', Georgia, serif;
+  --font-display: 'UnifrakturMaguntia', 'Ruslan Display', serif;
+  /* VT323 — пиксельная латиница; кириллица падает в PT Mono (умышленный zine-микс) */
+  --font-pixel: 'VT323', 'PT Mono', monospace;
+
+  --size-body: 1.1rem;
+  --leading-body: 1.65;
+  --measure: 46rem; /* ширина колонки текста */
+  --margin-col: 13rem; /* колонка маргиналий */
+
+  --shadow-punk: 4px 4px 0 var(--ink);
+}

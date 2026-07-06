@@ -1,0 +1,60 @@
+/* Оглавление курса */
+
+.toc {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  counter-reset: ch -1; /* главы с нуля */
+}
+
+.toc li {
+  border: 1px solid var(--ink);
+  margin-bottom: 0.6rem;
+  background: var(--paper);
+  counter-increment: ch;
+}
+
+.toc a {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.toc a::before {
+  content: counter(ch, decimal-leading-zero);
+  font-family: var(--font-pixel);
+  font-size: 1.2rem;
+  color: var(--pink);
+  min-width: 2ch;
+}
+
+.toc a:hover {
+  background: var(--acid);
+  box-shadow: var(--shadow-punk);
+}
+
+.toc .toc-title {
+  font-weight: 700;
+}
+
+.toc .toc-sub {
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin-left: auto;
+  text-align: right;
+}
+
+.toc li.pending {
+  opacity: 0.45;
+  border-style: dashed;
+}
+
+.toc li.pending a:hover {
+  background: var(--paper);
+  box-shadow: none;
+  cursor: default;
+}

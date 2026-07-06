@@ -1,0 +1,299 @@
+/* ============================================================
+   Компоненты: математические окружения, штампы, виджеты.
+   Тело теорем — священная территория LaTeX; панк — в ярлыках.
+   ============================================================ */
+
+/* ---- математические окружения ---- */
+
+.env {
+  margin: 1.6em 0;
+  padding: 1em 1.3em;
+  position: relative;
+  background: var(--paper);
+}
+
+.env > p:last-child {
+  margin-bottom: 0;
+}
+
+.env-label {
+  font-family: var(--font-pixel);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-block;
+  padding: 0.05em 0.6em;
+  margin: 0 0 0.5em;
+  transform: rotate(-0.8deg) translateY(-0.1em);
+}
+
+.env-title {
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* определение */
+.definition {
+  border: 1px solid var(--ink);
+  border-left: 6px solid var(--violet);
+}
+.definition .env-label {
+  background: var(--violet);
+  color: var(--paper);
+}
+
+/* теорема / лемма — курсивное тело, как в LaTeX */
+.theorem,
+.lemma,
+.corollary {
+  border: 1px solid var(--ink);
+  border-left: 6px solid var(--pink);
+}
+.theorem p,
+.lemma p,
+.corollary p {
+  font-style: italic;
+}
+.theorem .env-label,
+.lemma .env-label,
+.corollary .env-label {
+  background: var(--pink);
+  color: var(--paper);
+}
+
+/* пример / контрпример */
+.example {
+  border: 1px dashed var(--ink-soft);
+}
+.example .env-label {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+/* замечание на полях смысла */
+.remark {
+  background: var(--paper-deep);
+  border: none;
+}
+.remark .env-label {
+  background: var(--ink);
+  color: var(--acid);
+}
+
+/* доказательство */
+.proof {
+  margin: 1.4em 0 2em;
+  padding-left: 1.3em;
+  border-left: 2px dotted var(--ink-soft);
+}
+
+.proof-label {
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* тумбстоун + штамп в конце доказательства */
+.qed {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1em;
+}
+
+.qed::after {
+  content: '∎';
+  font-size: 1.2em;
+}
+
+.stamp {
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--stamp-red);
+  border: 2px solid var(--stamp-red);
+  border-radius: 4px;
+  padding: 0.05em 0.5em;
+  transform: rotate(-3deg);
+  opacity: 0.85;
+  user-select: none;
+}
+
+.stamp--acid {
+  color: var(--acid-deep);
+  border-color: var(--acid-deep);
+}
+
+/* ---- крипто-мораль: зачем это в криптографии ---- */
+
+.crypto-morale {
+  margin: 2em 0;
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow-punk);
+  padding: 1em 1.3em;
+  background: var(--paper);
+}
+
+.crypto-morale .env-label {
+  background: var(--ink);
+  color: var(--pink);
+}
+
+/* ---- виджеты ---- */
+
+.widget {
+  margin: 2.2em 0;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--shadow-punk);
+}
+
+.widget-title {
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  background: var(--ink);
+  color: var(--acid);
+  padding: 0.25em 0.8em;
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.widget-title::after {
+  content: '[interactive]';
+  color: var(--pink);
+}
+
+.widget-body {
+  padding: 1rem 1.2rem 1.2rem;
+  overflow-x: auto;
+}
+
+.widget-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em 1.4em;
+  align-items: center;
+  font-family: var(--font-pixel);
+  font-size: 1.05rem;
+  margin-bottom: 0.9em;
+}
+
+.widget-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.widget-controls select,
+.widget-controls input[type='number'] {
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 0.15em 0.4em;
+}
+
+.widget-controls button {
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 0.2em 0.8em;
+  cursor: pointer;
+}
+
+.widget-controls button:hover {
+  background: var(--acid);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.widget-hint {
+  font-family: var(--font-pixel);
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+  margin-top: 0.8em;
+}
+
+.widget-status {
+  font-family: var(--font-pixel);
+  font-size: 1.05rem;
+  margin-top: 0.6em;
+  min-height: 1.4em;
+}
+
+.widget-status .hl {
+  background: var(--acid);
+  padding: 0 0.25em;
+}
+
+/* таблица Кэли */
+.cayley {
+  border-collapse: collapse;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+}
+
+.cayley td,
+.cayley th {
+  border: 1px solid var(--rule);
+  width: 2em;
+  height: 2em;
+  text-align: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cayley th {
+  background: var(--paper-deep);
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.cayley td.subgroup {
+  background: var(--acid);
+}
+
+.cayley td.coset-0 { background: var(--acid); }
+.cayley td.coset-1 { background: #ffd1e8; }
+.cayley td.coset-2 { background: #e3d1ff; }
+.cayley td.coset-3 { background: #ffe9b3; }
+.cayley td.coset-4 { background: #c9ecff; }
+.cayley td.coset-5 { background: #ffd9c2; }
+
+.cayley td.flash {
+  outline: 3px solid var(--pink);
+  outline-offset: -2px;
+  font-weight: 700;
+}
+
+.cayley th.axis-hl {
+  background: var(--ink);
+  color: var(--acid);
+}
+
+/* легенда */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 1.2em;
+  font-family: var(--font-pixel);
+  font-size: 0.98rem;
+  margin-top: 0.7em;
+}
+
+.legend .chip {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 1px solid var(--ink);
+  vertical-align: -0.15em;
+  margin-right: 0.35em;
+}
+
+/* canvas-виджеты */
+.widget canvas {
+  display: block;
+  max-width: 100%;
+}
