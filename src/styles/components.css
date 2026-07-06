@@ -229,9 +229,9 @@
   }
 }
 
-/* ---- крипто-мораль: зачем это в криптографии ---- */
+/* ---- контекст: где это используется в криптографии ---- */
 
-.crypto-morale {
+.crypto-context {
   margin: 2em 0;
   border: 2px solid var(--ink);
   box-shadow: var(--shadow-punk);
@@ -239,7 +239,7 @@
   background: var(--paper);
 }
 
-.crypto-morale .env-label {
+.crypto-context .env-label {
   background: var(--ink);
   color: var(--pink);
 }

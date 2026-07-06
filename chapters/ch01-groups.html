@@ -18,8 +18,9 @@
         <span class="chapter-no">ГЛАВА 01</span>
         <h1>Группы</h1>
         <p class="chapter-epigraph">
-          RSA, Diffie–Hellman и эллиптические кривые — вычисления в конечных группах.
-          Квантовые атаки на них сводятся к задаче о группах: hidden subgroup problem.
+          Шифрование, подписи и обмен ключами сводятся к арифметике в конечных
+          структурах, где прямые вычисления дёшевы, а обратные — практически
+          невыполнимы. Эта глава — об устройстве таких структур.
         </p>
         <div class="doc-meta">
           <span>file: ch01-groups</span>
@@ -130,8 +131,8 @@
 
       <div data-widget="orbit" data-n="12" data-a="5" data-kind="add"></div>
 
-      <div class="crypto-morale">
-        <span class="env-label">крипто-мораль</span>
+      <div class="crypto-context">
+        <span class="env-label">в криптографии</span>
         <p>
           Протокол Diffie–Hellman (глава 4) начинается со слов «выберем циклическую группу
           \(G = \langle g \rangle\) с генератором \(g\)». Секретный ключ — показатель \(x\)
@@ -170,8 +171,8 @@
         полосы одинакового размера покрывают группу целиком.
       </p>
 
-      <div class="crypto-morale">
-        <span class="env-label">крипто-мораль</span>
+      <div class="crypto-context">
+        <span class="env-label">в криптографии</span>
         <p>
           Теорема Лагранжа используется и в атаках. <em>Атака малых подгрупп</em>
           на Diffie–Hellman (глава 4): злоумышленник переводит секрет жертвы в подгруппу
