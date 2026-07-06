@@ -133,10 +133,35 @@ const paintSymmetric: Painter = (ctx, rnd) => {
   ctx.fillRect(88, 0, 1, H);
 };
 
+/** Глава 4: линейная функция против экспоненциальной — порядок и хаос DLP. */
+const paintAsymmetric: Painter = (ctx, rnd) => {
+  ctx.fillStyle = C.ink;
+  ctx.fillRect(0, 0, W, H);
+  const p = 251;
+  const g = 6 + Math.floor(rnd() * 20);
+  const half = Math.floor(W / 2);
+  // слева: g·x mod p — регулярные полосы
+  for (let x = 0; x < half - 1; x += 1) {
+    const y = (g * x) % p;
+    ctx.fillStyle = C.pink;
+    ctx.fillRect(x, H - 1 - Math.floor((y / p) * H), 1, 1);
+  }
+  // справа: g^x mod p — шум
+  let acc = 1;
+  for (let x = 0; x < W - half - 1; x += 1) {
+    acc = (acc * g) % p;
+    ctx.fillStyle = C.acid;
+    ctx.fillRect(half + 1 + x, H - 1 - Math.floor((acc / p) * H), 1, 1);
+  }
+  ctx.fillStyle = C.paper;
+  ctx.fillRect(half, 0, 1, H);
+};
+
 const painters: Readonly<Record<string, Painter>> = {
   '01': paintGroups,
   '02': paintRings,
   '03': paintSymmetric,
+  '04': paintAsymmetric,
 };
 
 export const mountHero = (root: HTMLElement): void => {

@@ -45,3 +45,15 @@ export const unitsMod = (n: number): readonly number[] =>
 
 /** Функция Эйлера (наивно — для учебных размеров). */
 export const eulerPhi = (n: number): number => unitsMod(n).length;
+
+/** Мультипликативный порядок a по модулю n (gcd(a, n) = 1, учебные размеры). */
+export const multOrder = (a: number, n: number): number => {
+  let acc = mod(a, n);
+  let k = 1;
+  while (acc !== 1) {
+    acc = mod(acc * a, n);
+    k += 1;
+    if (k > n) throw new Error('порядок не найден: gcd(a, n) ≠ 1?');
+  }
+  return k;
+};

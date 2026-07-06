@@ -384,6 +384,24 @@
   padding: 0 0.25em;
 }
 
+/* DH: три колонки */
+.dh-cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  align-items: flex-start;
+}
+
+.dh-col {
+  flex: 1 1 12rem;
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.8rem;
+}
+
+.dh-col.dh-eve {
+  border: 2px dashed var(--pink);
+}
+
 /* таблицы шагов (Евклид) */
 .steps-pair {
   display: flex;

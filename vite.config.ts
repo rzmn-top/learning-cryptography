@@ -10,6 +10,7 @@ export default defineConfig({
         ch01: resolve(__dirname, 'chapters/ch01-groups.html'),
         ch02: resolve(__dirname, 'chapters/ch02-rings.html'),
         ch03: resolve(__dirname, 'chapters/ch03-symmetric.html'),
+        ch04: resolve(__dirname, 'chapters/ch04-rsa-dh.html'),
       },
     },
   },
