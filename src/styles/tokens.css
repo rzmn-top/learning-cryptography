@@ -26,7 +26,8 @@
 
   --size-body: 0.98rem;
   --leading-body: 1.65;
-  --measure: 40rem; /* ширина колонки текста */
+  /* ширина колонки: растёт с экраном, ~52rem на больших */
+  --measure: clamp(42rem, 58vw, 52rem);
   --panel-w: 26rem; /* панель доказательств (split screen) */
 
   --shadow-punk: 4px 4px 0 var(--ink);
