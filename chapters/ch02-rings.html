@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Глава 2. Кольца, поля и модулярная арифметика — Криптография</title>
+  <script type="module" src="../src/chapters/ch02.ts"></script>
+</head>
+<body>
+  <nav class="top-nav">
+    <span class="brand">crypto.course</span>
+    <a href="../index.html">оглавление</a>
+  </nav>
+
+  <div class="layout">
+    <article class="prose">
+      <header class="chapter-head">
+        <span class="chapter-no">ГЛАВА 02</span>
+        <h1>Кольца, поля и модулярная арифметика</h1>
+        <p class="chapter-epigraph">
+          Одной операции мало: шифрование перемножает, подписи складывают.
+          Эта глава достраивает вторую операцию и доказывает то, что глава 1
+          использовала без доказательства: критерий обратимости, функцию Эйлера
+          и теоремы, обеспечивающие корректность RSA.
+        </p>
+        <div class="doc-meta">
+          <span>file: ch02-rings</span>
+          <span>раздел: алгебра</span>
+          <span>пререквизиты: гл. 1</span>
+          <span>сносок: 11 · виджетов: 3</span>
+          <span class="ok">status: OK</span>
+        </div>
+      </header>
+
+      <h2><span class="secno">2.0</span>Две операции</h2>
+
+      <p>
+        В группе одна операция. Но уже RSA-шифрование \(m \mapsto m^e \bmod n\)
+        перемножает остатки, а его анализ требует и складывать их: показатели степеней
+        приводятся по модулю <a class="term" href="#def-phi">функции Эйлера</a>
+        \(\varphi(n)\), доказательства манипулируют суммами. Структура,
+        в которой сложение и умножение согласованы, называется
+        <a class="term" href="#def-ring">кольцом</a>; кольцо, в котором каждый
+        ненулевой элемент обратим по умножению, — <a class="term" href="#def-ring">полем</a>.
+      </p>
+
+      <div class="env definition" id="def-ring">
+        <span class="env-label">Определение</span>
+        <p>
+          <span class="env-title">Коммутативное кольцо с единицей</span> — множество \(R\)
+          с двумя операциями \((+, \cdot)\), где:
+        </p>
+        <ol class="axioms">
+          <li>\((R, +)\) — абелева группа (нейтральный элемент — \(0\));</li>
+          <li>умножение ассоциативно, коммутативно, имеет нейтральный элемент \(1\);</li>
+          <li><em>дистрибутивность:</em> \(a \cdot (b + c) = a \cdot b + a \cdot c\).</li>
+        </ol>
+        <p>
+          <span class="env-title">Поле</span> — коммутативное кольцо с единицей,
+          в котором \(0 \ne 1\) и каждый ненулевой элемент обратим по умножению.
+        </p>
+      </div>
+
+      <p>
+        \(\mathbb{Z}\) — кольцо, но не поле. \(\mathbb{Q}\) и \(\mathbb{R}\) — поля.
+        \(\mathbb{Z}_n\) со сложением и умножением по модулю — кольцо для любого
+        \(n \ge 2\); является ли оно полем — зависит от \(n\), и это центральный вопрос
+        главы. В \(\mathbb{Z}_6\) равенство \(2 \cdot 3 = 0\) показывает новое явление:
+        произведение ненулевых элементов равно нулю. Такие элементы называются
+        <em>делителями нуля</em>, и они несовместимы с обратимостью:
+        <button class="claim" data-aside="zerodiv">каждый ненулевой элемент
+        \(\mathbb{Z}_n\) либо обратим, либо делитель нуля</button>.
+      </p>
+
+      <h2><span class="secno">2.1</span>Алгоритм Евклида и лемма Безу</h2>
+
+      <p>
+        Критерий из главы 1 — «обратимы те \(a\), у которых \(\gcd(a, n) = 1\)» —
+        остался без доказательства. Инструмент для него старше самой криптографии.
+        НОД двух чисел вычисляется без разложения на множители:
+        <button class="claim" data-aside="euclid">\(\gcd(a, b) = \gcd(b,\; a \bmod b)\),
+        и повторение этого шага завершается за \(O(\log \min(a, b))\) делений</button> —
+        алгоритм Евклида. Если во время спуска запоминать частные, тем же проходом
+        получается больше, чем НОД:
+        <button class="claim" data-aside="bezout">существуют целые \(x, y\) такие, что
+        \(a x + b y = \gcd(a, b)\)</button> — <strong>лемма Безу</strong>.
+      </p>
+      <p>
+        Лемма Безу даёт недостающее доказательство:
+        <button class="claim" data-aside="inverse">\(a\) обратим в \(\mathbb{Z}_n\)
+        тогда и только тогда, когда \(\gcd(a, n) = 1\), и обратный вычисляется
+        расширенным алгоритмом Евклида за \(O(\log n)\)</button>.
+        Отсюда же — ответ на вопрос о полях:
+        <button class="claim" data-aside="field">\(\mathbb{Z}_p\) — поле в точности
+        тогда, когда \(p\) простое</button>. Над конечными полями \(\mathbb{Z}_p\)
+        строятся эллиптические кривые (глава 5).
+      </p>
+
+      <div data-widget="euclid-table" data-a="240" data-b="46"></div>
+
+      <div class="crypto-context">
+        <span class="env-label">в криптографии</span>
+        <p>
+          Генерация RSA-ключа заканчивается вычислением секретной экспоненты
+          \(d = e^{-1} \bmod \varphi(n)\) — это один запуск расширенного алгоритма
+          Евклида. Он же вычисляет обратные элементы в формулах эллиптических кривых
+          (глава 5) и при декодировании в постквантовых схемах (глава 9).
+        </p>
+      </div>
+
+      <h2><span class="secno">2.2</span>Китайская теорема об остатках</h2>
+
+      <p>
+        Следующий инструмент разбирает кольцо \(\mathbb{Z}_{mn}\) на независимые
+        компоненты. Число \(x \in \mathbb{Z}_{mn}\) даёт два остатка:
+        \(x \bmod m\) и \(x \bmod n\). Пара остатков определяет число однозначно:
+        <button class="claim" data-aside="crt">если \(\gcd(m, n) = 1\), отображение
+        \(x \mapsto (x \bmod m,\; x \bmod n)\) — биекция \(\mathbb{Z}_{mn} \to
+        \mathbb{Z}_m \times \mathbb{Z}_n\), согласованная со сложением и умножением,
+        и обратное к ней вычислимо явно</button> — <strong>китайская теорема
+        об остатках</strong> (CRT). Работать с парой остатков можно покомпонентно,
+        а в конце собрать результат обратно в \(\mathbb{Z}_{mn}\).
+      </p>
+
+      <div data-widget="crt-grid" data-m="4" data-n="9"></div>
+
+      <div class="crypto-context">
+        <span class="env-label">в криптографии</span>
+        <p>
+          RSA-расшифрование \(c^d \bmod n\) при \(n = pq\) на практике выполняется
+          через CRT: два возведения в степень по модулям \(p\) и \(q\) вместо одного
+          по модулю \(n\) — примерно в четыре раза быстрее, поскольку стоимость умножения растёт
+          квадратично с длиной чисел. Так делает каждая библиотека TLS.
+        </p>
+      </div>
+
+      <h2><span class="secno">2.3</span>Функция Эйлера</h2>
+
+      <p id="def-phi">
+        <em>Функция Эйлера</em> \(\varphi(n)\) — количество обратимых элементов
+        в \(\mathbb{Z}_n\), то есть порядок группы \(\mathbb{Z}_n^{*}\). По критерию
+        обратимости это число элементов \(\{1, \dots, n\}\), взаимно простых с \(n\).
+        Для простого \(p\) все ненулевые остатки обратимы: \(\varphi(p) = p - 1\).
+        Для степени простого
+        <button class="claim" data-aside="phi-pp">\(\varphi(p^k) = p^k - p^{k-1}\)</button>,
+        а для взаимно простых сомножителей
+        <button class="claim" data-aside="phi-mult">\(\varphi(mn) =
+        \varphi(m)\,\varphi(n)\)</button> — мультипликативность, прямое следствие CRT.
+        Комбинация этих фактов даёт формулу для произвольного \(n\) по его разложению:
+        \[
+          \varphi(n) \;=\; \prod_{i} \left(p_i^{k_i} - p_i^{k_i - 1}\right)
+          \;=\; n \prod_{p \mid n} \Bigl(1 - \frac{1}{p}\Bigr).
+        \]
+      </p>
+
+      <div data-widget="phi-calc" data-n="36"></div>
+
+      <p>
+        Формула требует знать разложение \(n\). Для RSA-модуля \(n = pq\) это
+        принципиально: \(\varphi(n) = (p-1)(q-1)\) мгновенно вычисляется тем,
+        кто знает \(p\) и \(q\), и неизвестно тому, кто видит только \(n\).
+        Знание \(\varphi(n)\) равносильно факторизации: из \(n\) и \(\varphi(n)\)
+        числа \(p, q\) восстанавливаются как корни квадратного уравнения
+        \(t^2 - (n - \varphi(n) + 1)t + n = 0\).
+      </p>
+
+      <h2><span class="secno">2.4</span>Теоремы Эйлера и Ферма</h2>
+
+      <p>
+        Все компоненты собраны: \(\mathbb{Z}_n^{*}\) — группа (обратимость доказана
+        в 2.1), её порядок — \(\varphi(n)\) (2.3), а по следствию теоремы Лагранжа
+        (глава 1) элемент группы в степени порядка группы равен нейтральному. Отсюда
+        <button class="claim" data-aside="euler">\(a^{\varphi(n)} \equiv 1 \pmod n\)
+        при \(\gcd(a, n) = 1\)</button> — <strong>теорема Эйлера</strong>; частный
+        случай простого \(n = p\) — <strong>малая теорема Ферма</strong>:
+        \(a^{p-1} \equiv 1 \pmod p\) для \(a \not\equiv 0\).
+      </p>
+      <p>
+        Осталась вычислительная сторона: почему возведение в степень — «дешёвая»
+        операция. Наивное умножение \(m \cdot m \cdots m\) для криптографических
+        показателей (\(e \sim 2^{2048}\)) невыполнимо, но
+        <button class="claim" data-aside="fastexp">\(a^e \bmod n\) вычисляется
+        за \(O(\log e)\) умножений</button> разложением показателя по двоичной записи
+        (square-and-multiply). Итог — асимметрия: возведение в степень полиномиально
+        по длине входа, а для обращения (дискретный логарифм, факторизация)
+        полиномиальный алгоритм неизвестен.
+      </p>
+
+      <div class="crypto-context">
+        <span class="env-label">в криптографии</span>
+        <p>
+          Схема RSA целиком: ключи \(n = pq\), открытая экспонента \(e\)
+          с \(\gcd(e, \varphi(n)) = 1\), секретная \(d = e^{-1} \bmod \varphi(n)\);
+          шифрование \(c = m^e \bmod n\), расшифрование \(c^d \bmod n\). Корректность —
+          это равенство \(m^{ed} = m\) в \(\mathbb{Z}_n\): для обратимых \(m\) оно
+          следует из теоремы Эйлера (\(ed = 1 + k\varphi(n)\)), но
+          <button class="claim" data-aside="rsa">выполняется и для необратимых
+          \(m\)</button> — доказательство склеивает случаи по CRT. Полный разбор
+          схемы, включая обязательный padding, — в главе 4.
+        </p>
+      </div>
+
+      <h2><span class="secno">2.5</span>Что дальше</h2>
+
+      <p>
+        Математика асимметричных схем построена, но прежде чем собирать из неё протоколы,
+        нужна симметричная половина криптографии: блочные шифры и хэш-функции.
+        Без хэшей не определить подпись (подписывается не сообщение, а его хэш),
+        без симметричных шифров не объяснить, зачем протоколам обмен ключами
+        и как квантовые атаки действуют на разные примитивы по-разному. Это глава 3.
+      </p>
+
+      <nav class="chapter-nav">
+        <a href="ch01-groups.html">← глава 1: группы</a>
+        <a href="#">глава 3: симметричная криптография →</a>
+      </nav>
+    </article>
+  </div>
+
+  <!-- ======================= сноски-доказательства ======================= -->
+  <div class="aside-store" hidden>
+
+    <section id="aside-zerodiv" data-title="обратимость и делители нуля">
+      <div class="env lemma">
+        <span class="env-label">Лемма</span>
+        <p>
+          Пусть \(a \in \mathbb{Z}_n\), \(a \ne 0\). Если \(\gcd(a, n) = 1\),
+          то \(a\) обратим; иначе \(a\) — делитель нуля. Эти случаи несовместимы.
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        Случай \(\gcd(a, n) = 1\) — критерий обратимости (сноска в 2.1).
+        Пусть \(d = \gcd(a, n) > 1\). Возьмём \(b = n/d\): тогда \(b \ne 0\)
+        в \(\mathbb{Z}_n\) (так как \(0 &lt; b &lt; n\)) и
+        \[
+          a \cdot b = a \cdot \frac{n}{d} = \frac{a}{d} \cdot n \equiv 0 \pmod n,
+        \]
+        где \(a/d\) — целое. Значит, \(a\) — делитель нуля.
+        Совместить случаи нельзя: если \(a\) обратим и \(ab \equiv 0\), умножение
+        на \(a^{-1}\) даёт \(b \equiv 0\) — противоречие с \(b \ne 0\).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-euclid" data-title="алгоритм Евклида">
+      <div class="env lemma">
+        <span class="env-label">Лемма</span>
+        <p>
+          Для \(b \ne 0\): \(\gcd(a, b) = \gcd(b,\; a \bmod b)\). Повторение шага
+          завершается, и число делений есть \(O(\log \min(a, b))\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        Пусть \(r = a - qb\), где \(q = \lfloor a/b \rfloor\). Любой общий делитель
+        \(a\) и \(b\) делит \(r = a - qb\); любой общий делитель \(b\) и \(r\) делит
+        \(a = qb + r\). Множества общих делителей пар \((a, b)\) и \((b, r)\)
+        совпадают — значит, совпадают и наибольшие элементы.
+        <br /><br />
+        Завершение: остатки убывают строго (\(0 \le r &lt; b\)), достигая нуля.
+        Оценка: если \(a \ge b\), то \(a \bmod b &lt; a/2\) (при \(b \le a/2\) это
+        следует из \(r &lt; b\); при \(b > a/2\) частное равно \(1\) и остаток \(a - b &lt; a/2\)).
+        Каждые два шага меньший аргумент уменьшается вдвое, итого \(O(\log \min(a,b))\)
+        делений.
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-bezout" data-title="лемма Безу">
+      <div class="env theorem">
+        <span class="env-label">Лемма · Безу</span>
+        <p>
+          Для любых целых \(a, b \ge 0\) существуют целые \(x, y\) такие, что
+          \(a x + b y = \gcd(a, b)\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        Индукция по числу шагов алгоритма Евклида.
+        <br /><br />
+        <strong>База</strong> (\(b = 0\)): \(\gcd(a, 0) = a = a \cdot 1 + 0 \cdot 0\),
+        годятся \(x = 1\), \(y = 0\).
+        <br /><br />
+        <strong>Шаг.</strong> Пусть для пары \((b,\; a \bmod b)\) коэффициенты найдены:
+        \[
+          b x' + (a \bmod b)\, y' = g, \qquad g = \gcd(a, b).
+        \]
+        Подставим \(a \bmod b = a - \lfloor a/b \rfloor\, b\):
+        \[
+          g = a\, y' + b\,\bigl(x' - \lfloor a/b \rfloor\, y'\bigr),
+        \]
+        то есть \(x = y'\), \(y = x' - \lfloor a/b \rfloor\, y'\). Обратный ход
+        в виджете — в точности эта подстановка, выполненная от базы вверх.
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-inverse" data-title="критерий обратимости">
+      <div class="env theorem">
+        <span class="env-label">Теорема</span>
+        <p>
+          \(a\) обратим в \(\mathbb{Z}_n\) \(\iff\) \(\gcd(a, n) = 1\).
+          Обратный элемент вычисляется за \(O(\log n)\) арифметических операций.
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        (⇐) По лемме Безу \(a x + n y = 1\) для некоторых целых \(x, y\).
+        По модулю \(n\): \(a x \equiv 1 \pmod n\), значит \(a^{-1} = x \bmod n\).
+        <br /><br />
+        (⇒) Если \(d = \gcd(a, n) > 1\) и \(a x \equiv 1 \pmod n\),
+        то \(a x - 1 = q n\), откуда \(1 = a x - q n\) делится на \(d\) —
+        противоречие.
+        <br /><br />
+        Вычисление: расширенный алгоритм Евклида — \(O(\log n)\) делений
+        (сноска «алгоритм Евклида»).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+      <p>
+        Это доказательство закрывает сноску «обратимость в \(\mathbb{Z}_n\)» главы 1,
+        где лемма Безу использовалась как чёрный ящик.
+      </p>
+    </section>
+
+    <section id="aside-field" data-title="Z_p — поле">
+      <div class="env theorem">
+        <span class="env-label">Теорема</span>
+        <p>
+          \(\mathbb{Z}_n\) — поле \(\iff\) \(n\) простое.
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        (⇐) Пусть \(n = p\) простое. Для любого \(a \in \{1, \dots, p-1\}\):
+        \(\gcd(a, p) \in \{1, p\}\), а \(p \nmid a\), значит \(\gcd(a, p) = 1\)
+        и \(a\) обратим по критерию обратимости. Все ненулевые обратимы — поле.
+        <br /><br />
+        (⇒) Пусть \(n\) составное: \(n = uv\), \(1 &lt; u, v &lt; n\).
+        Тогда \(\gcd(u, n) = u > 1\),
+        элемент \(u\) необратим (критерий), и \(\mathbb{Z}_n\) — не поле.
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-crt" data-title="китайская теорема об остатках">
+      <div class="env theorem">
+        <span class="env-label">Теорема · CRT</span>
+        <p>
+          Пусть \(\gcd(m, n) = 1\). Отображение
+          \(\psi(x) = (x \bmod m,\; x \bmod n)\) — биекция
+          \(\mathbb{Z}_{mn} \to \mathbb{Z}_m \times \mathbb{Z}_n\),
+          причём \(\psi(x + y) = \psi(x) + \psi(y)\) и
+          \(\psi(x y) = \psi(x)\,\psi(y)\) (покомпонентно).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        <strong>Согласованность с операциями</strong> — свойство взятия остатка:
+        \((x + y) \bmod m = (x \bmod m + y \bmod m) \bmod m\), аналогично
+        для умножения и для модуля \(n\).
+        <br /><br />
+        <strong>Инъективность.</strong> Пусть \(\psi(x) = \psi(y)\), то есть
+        \(m \mid x - y\) и \(n \mid x - y\). Запишем \(x - y = k m\). По лемме Безу
+        \(1 = m u + n v\), умножим на \(k\):
+        \[
+          k = k m u + k n v = (x - y) u + k n v.
+        \]
+        Оба слагаемых делятся на \(n\) (первое — так как \(n \mid x - y\)),
+        значит \(n \mid k\), и \(x - y = km\) делится на \(mn\).
+        В \(\mathbb{Z}_{mn}\) это означает \(x = y\).
+        <br /><br />
+        <strong>Биекция.</strong> Инъекция между конечными множествами равной
+        мощности \(|\mathbb{Z}_{mn}| = mn = |\mathbb{Z}_m \times \mathbb{Z}_n|\) —
+        биекция.
+        <br /><br />
+        <strong>Явное обращение.</strong> Для пары \((r_1, r_2)\):
+        \[
+          x = \bigl(r_1 \cdot n \cdot (n^{-1} \bmod m) + r_2 \cdot m \cdot (m^{-1} \bmod n)\bigr) \bmod mn.
+        \]
+        Первое слагаемое \(\equiv r_1 \pmod m\) и \(\equiv 0 \pmod n\); второе —
+        наоборот. Обратные существуют по критерию обратимости
+        (\(\gcd(m, n) = 1\)).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-phi-pp" data-title="φ степени простого">
+      <div class="env lemma">
+        <span class="env-label">Лемма</span>
+        <p>\(\varphi(p^k) = p^k - p^{k-1}\) для простого \(p\).</p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        \(\gcd(a, p^k) > 1\) \(\iff\) \(p \mid a\). Среди \(\{1, \dots, p^k\}\)
+        кратных \(p\) ровно \(p^{k-1}\) штук (\(p, 2p, \dots, p^{k-1} \cdot p\)).
+        Остальные \(p^k - p^{k-1}\) взаимно просты с \(p^k\).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-phi-mult" data-title="мультипликативность φ">
+      <div class="env theorem">
+        <span class="env-label">Теорема</span>
+        <p>
+          Если \(\gcd(m, n) = 1\), то \(\varphi(mn) = \varphi(m)\,\varphi(n)\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        Биекция CRT переводит обратимые элементы в пары обратимых:
+        \[
+          \gcd(x, mn) = 1 \iff \gcd(x, m) = 1 \text{ и } \gcd(x, n) = 1
+        \]
+        (простой делитель, общий у \(x\) и \(mn\), делит \(m\) или \(n\); обратно,
+        общий делитель \(x\) и \(m\) делит и \(mn\); остатки сохраняют НОД:
+        \(\gcd(x, m) = \gcd(x \bmod m, m)\)).
+        Значит, \(\psi\) ограничивается до биекции
+        \(\mathbb{Z}_{mn}^{*} \to \mathbb{Z}_m^{*} \times \mathbb{Z}_n^{*}\),
+        и мощности равны: \(\varphi(mn) = \varphi(m)\,\varphi(n)\).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+    </section>
+
+    <section id="aside-euler" data-title="теоремы Эйлера и Ферма">
+      <div class="env theorem">
+        <span class="env-label">Теорема · Эйлер</span>
+        <p>
+          Если \(\gcd(a, n) = 1\), то \(a^{\varphi(n)} \equiv 1 \pmod n\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство 1 (через Лагранжа).</span>
+        \(\mathbb{Z}_n^{*}\) — группа порядка \(\varphi(n)\); по следствию теоремы
+        Лагранжа (глава 1) \(a^{|G|} = e\) для любого элемента, то есть
+        \(a^{\varphi(n)} \equiv 1\).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство 2 (прямое, без Лагранжа).</span>
+        Пусть \(u_1, \dots, u_{\varphi(n)}\) — все элементы \(\mathbb{Z}_n^{*}\).
+        Умножение на \(a\) — перестановка \(\mathbb{Z}_n^{*}\) (правило сокращения,
+        глава 1), поэтому наборы \(\{u_i\}\) и \(\{a u_i\}\) совпадают
+        как множества. Перемножим каждый набор целиком:
+        \[
+          \prod_i u_i \;\equiv\; \prod_i (a u_i) \;=\; a^{\varphi(n)} \prod_i u_i \pmod n.
+        \]
+        Произведение \(\prod u_i\) обратимо (как произведение обратимых), сокращаем:
+        \(1 \equiv a^{\varphi(n)}\).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+      <div class="env corollary">
+        <span class="env-label">Следствие · Ферма</span>
+        <p>
+          Для простого \(p\) и \(a \not\equiv 0 \pmod p\):
+          \(a^{p-1} \equiv 1 \pmod p\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        \(\varphi(p) = p - 1\), и \(\gcd(a, p) = 1\) для \(a \not\equiv 0\).
+        <div class="qed"></div>
+      </div>
+    </section>
+
+    <section id="aside-fastexp" data-title="square-and-multiply">
+      <div class="env lemma">
+        <span class="env-label">Лемма</span>
+        <p>
+          \(a^e \bmod n\) вычисляется не более чем за \(2\lfloor\log_2 e\rfloor + 1\)
+          умножений по модулю \(n\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        Запишем \(e = \sum_i e_i 2^i\) в двоичной системе. Тогда
+        \[
+          a^e = \prod_{i : e_i = 1} a^{2^i}.
+        \]
+        Последовательность \(a^{2^0}, a^{2^1}, a^{2^2}, \dots\) вычисляется
+        последовательным возведением в квадрат: \(a^{2^{i+1}} = (a^{2^i})^2\) —
+        по одному умножению на бит. Накопление произведения по единичным битам —
+        ещё не более одного умножения на бит. Все операции — по модулю \(n\),
+        промежуточные значения не превышают \(n^2\).
+        <div class="qed"><span class="stamp">доказано</span></div>
+      </div>
+      <p>
+        Для \(e \sim 2^{2048}\) это ≈ 4000 умножений вместо \(2^{2048}\).
+        Замечание для практики: наивная реализация с ветвлением по биту раскрывает
+        секретный показатель через время выполнения (timing attack) — реальные
+        библиотеки используют constant-time варианты. Подробнее в главе 4.
+      </p>
+    </section>
+
+    <section id="aside-rsa" data-title="m^ed = m для всех m">
+      <div class="env theorem">
+        <span class="env-label">Теорема</span>
+        <p>
+          Пусть \(n = pq\), \(p \ne q\) простые, \(ed \equiv 1 \pmod{\varphi(n)}\).
+          Тогда \(m^{ed} \equiv m \pmod n\) для <em>всех</em> \(m \in \mathbb{Z}_n\).
+        </p>
+      </div>
+      <div class="proof">
+        <span class="proof-label">Доказательство.</span>
+        Запишем \(ed = 1 + k\varphi(n) = 1 + k(p-1)(q-1)\). По CRT достаточно
+        проверить сравнение по модулям \(p\) и \(q\) по отдельности.
+        <br /><br />
+        <strong>Модуль \(p\).</strong> Если \(p \mid m\), обе части сравнимы с \(0\).
+        Иначе \(\gcd(m, p) = 1\), и по малой теореме Ферма
+        \[
+          m^{ed} = m \cdot \bigl(m^{p-1}\bigr)^{k(q-1)} \equiv m \cdot 1^{k(q-1)} = m \pmod p.
+        \]
+        <strong>Модуль \(q\)</strong> — симметрично.
+        <br /><br />
+        Итак, \(p \mid m^{ed} - m\) и \(q \mid m^{ed} - m\); по инъективности CRT
+        (или напрямую: \(pq \mid m^{ed} - m\) для взаимно простых \(p, q\))
+        получаем \(m^{ed} \equiv m \pmod n\).
+        <div class="qed"><span class="stamp stamp--acid">ключ к rsa</span></div>
+      </div>
+      <p>
+        Это утверждение обещано в главе 1 (сноска «теорема Эйлера · превью»):
+        там равенство было доказано только для обратимых \(m\).
+      </p>
+    </section>
+
+  </div>
+</body>
+</html>

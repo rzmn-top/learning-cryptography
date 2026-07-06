@@ -384,6 +384,95 @@
   padding: 0 0.25em;
 }
 
+/* таблицы шагов (Евклид) */
+.steps-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.steps-caption {
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.3em;
+}
+
+.steps {
+  border-collapse: collapse;
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+}
+
+.steps th,
+.steps td {
+  border: 1px solid var(--rule);
+  padding: 0.1em 0.6em;
+  text-align: right;
+}
+
+.steps th {
+  background: var(--paper-deep);
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.steps tr:last-child td {
+  background: var(--acid);
+}
+
+/* CRT-сетка */
+.crt td.crt-empty {
+  color: var(--rule);
+  cursor: default;
+}
+
+.crt td.crt-filled {
+  background: var(--acid);
+}
+
+.crt td.crt-clash {
+  background: var(--pink);
+  color: var(--paper);
+}
+
+.crt td {
+  min-width: 2.4em;
+  font-size: 0.92rem;
+}
+
+/* φ-калькулятор */
+.phi-derivation {
+  font-family: var(--font-pixel);
+  font-size: 1.1rem;
+  margin: 0.4em 0 0.8em;
+}
+
+.unit-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+}
+
+.unit-strip span {
+  min-width: 1.9em;
+  text-align: center;
+  border: 1px solid var(--rule);
+  padding: 0.05em 0.15em;
+}
+
+.unit-strip .unit {
+  background: var(--acid);
+  border-color: var(--ink);
+}
+
+.unit-strip .nonunit {
+  color: var(--ink-soft);
+}
+
 /* таблица Кэли */
 .cayley {
   border-collapse: collapse;
