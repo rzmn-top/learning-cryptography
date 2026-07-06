@@ -11,9 +11,8 @@ import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
 import { initKeyboardNav } from '../ui/keyboard-nav';
-import { mountRsaCalc } from '../widgets/rsa-calc';
-import { mountDhDemo } from '../widgets/dh-demo';
-import { mountDlogScatter } from '../widgets/dlog-scatter';
+import { mountPaillierCalc } from '../widgets/paillier-calc';
+import { mountNoiseBudget } from '../widgets/noise-budget';
 import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
@@ -21,9 +20,8 @@ const main = (): void => {
   initAsidePanel();
   initKeyboardNav();
   mountAll({
-    'rsa-calc': mountRsaCalc,
-    'dh-demo': mountDhDemo,
-    'dlog-scatter': mountDlogScatter,
+    'paillier-calc': mountPaillierCalc,
+    'noise-budget': mountNoiseBudget,
     hero: mountHero,
   });
 };

@@ -10,6 +10,7 @@ import '../styles/components.css';
 import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
+import { initKeyboardNav } from '../ui/keyboard-nav';
 import { mountEuclidTable } from '../widgets/euclid-table';
 import { mountCrtGrid } from '../widgets/crt-grid';
 import { mountPhiCalc } from '../widgets/phi-calc';
@@ -18,6 +19,7 @@ import { mountHero } from '../widgets/hero';
 const main = (): void => {
   renderMath(document.body);
   initAsidePanel();
+  initKeyboardNav();
   mountAll({
     'euclid-table': mountEuclidTable,
     'crt-grid': mountCrtGrid,

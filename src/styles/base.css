@@ -220,6 +220,13 @@ code {
   padding: 0;
 }
 
+/* главная: та же высота шапки, но без кнопки — невидимый призрак кнопки */
+.top-nav .nav-ghost {
+  visibility: hidden;
+  border: 1px solid transparent;
+  padding: 0.1em 0.6em;
+}
+
 .chapter-nav {
   display: flex;
   justify-content: space-between;

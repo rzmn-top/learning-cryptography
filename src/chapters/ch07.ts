@@ -11,9 +11,10 @@ import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
 import { initKeyboardNav } from '../ui/keyboard-nav';
-import { mountRsaCalc } from '../widgets/rsa-calc';
-import { mountDhDemo } from '../widgets/dh-demo';
-import { mountDlogScatter } from '../widgets/dlog-scatter';
+import { mountFourierWind } from '../widgets/fourier-wind';
+import { mountQftPeriod } from '../widgets/qft-period';
+import { mountShor15 } from '../widgets/shor15';
+import { mountGrover } from '../widgets/grover';
 import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
@@ -21,9 +22,10 @@ const main = (): void => {
   initAsidePanel();
   initKeyboardNav();
   mountAll({
-    'rsa-calc': mountRsaCalc,
-    'dh-demo': mountDhDemo,
-    'dlog-scatter': mountDlogScatter,
+    'fourier-wind': mountFourierWind,
+    'qft-period': mountQftPeriod,
+    shor15: mountShor15,
+    grover: mountGrover,
     hero: mountHero,
   });
 };

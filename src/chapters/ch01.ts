@@ -10,6 +10,7 @@ import '../styles/components.css';
 import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
+import { initKeyboardNav } from '../ui/keyboard-nav';
 import { mountCayleyTable } from '../widgets/cayley-table';
 import { mountOrbit } from '../widgets/orbit';
 import { mountHero } from '../widgets/hero';
@@ -17,6 +18,7 @@ import { mountHero } from '../widgets/hero';
 const main = (): void => {
   renderMath(document.body);
   initAsidePanel();
+  initKeyboardNav();
   mountAll({
     'cayley-table': mountCayleyTable,
     orbit: mountOrbit,

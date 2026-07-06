@@ -11,9 +11,9 @@ import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
 import { initAsidePanel } from '../ui/aside-panel';
 import { initKeyboardNav } from '../ui/keyboard-nav';
-import { mountRsaCalc } from '../widgets/rsa-calc';
-import { mountDhDemo } from '../widgets/dh-demo';
-import { mountDlogScatter } from '../widgets/dlog-scatter';
+import { mountLatticeCvp } from '../widgets/lattice-cvp';
+import { mountLweDemo } from '../widgets/lwe-demo';
+import { mountRegevDemo } from '../widgets/regev-demo';
 import { mountHero } from '../widgets/hero';
 
 const main = (): void => {
@@ -21,9 +21,9 @@ const main = (): void => {
   initAsidePanel();
   initKeyboardNav();
   mountAll({
-    'rsa-calc': mountRsaCalc,
-    'dh-demo': mountDhDemo,
-    'dlog-scatter': mountDlogScatter,
+    'lattice-cvp': mountLatticeCvp,
+    'lwe-demo': mountLweDemo,
+    'regev-demo': mountRegevDemo,
     hero: mountHero,
   });
 };
