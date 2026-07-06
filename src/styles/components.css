@@ -32,6 +32,21 @@
   font-style: normal;
 }
 
+/* список аксиом внутри окружения */
+.axioms {
+  margin: 0.4em 0 0.8em;
+  padding-left: 1.6em;
+}
+
+.axioms li {
+  margin-bottom: 0.35em;
+}
+
+.axioms li::marker {
+  font-family: var(--font-pixel);
+  color: var(--violet);
+}
+
 /* определение */
 .definition {
   border: 1px solid var(--ink);
