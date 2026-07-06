@@ -157,11 +157,54 @@ const paintAsymmetric: Painter = (ctx, rnd) => {
   ctx.fillRect(half, 0, 1, H);
 };
 
+/** Глава 5: силуэт эллиптической кривой слева, облако точек над F_p справа. */
+const paintEllipticCurve: Painter = (ctx, rnd) => {
+  ctx.fillStyle = C.ink;
+  ctx.fillRect(0, 0, W, H);
+  const half = Math.floor(W / 2);
+  const a = -1;
+  const b = 2 + Math.floor(rnd() * 3);
+  // слева: гладкая кривая над R (две ветви)
+  const scaleX = 8;
+  const scaleY = H / 7;
+  for (let sx = 2; sx < half - 2; sx += 1) {
+    const x = (sx - half / 2) / scaleX;
+    const rhs = x ** 3 + a * x + b;
+    if (rhs < 0) continue;
+    const y = Math.sqrt(rhs);
+    for (const s of [1, -1]) {
+      const py = Math.round(H / 2 - s * y * scaleY);
+      if (py >= 0 && py < H) {
+        ctx.fillStyle = s > 0 ? C.acid : C.pink;
+        ctx.fillRect(sx, py, 1, 1);
+      }
+    }
+  }
+  // справа: точки над F_p
+  const p = 61;
+  const ca = 2 + Math.floor(rnd() * 3);
+  const cb = 2 + Math.floor(rnd() * 5);
+  for (let x = 0; x < p; x += 1) {
+    const rhs = (((x * x * x + ca * x + cb) % p) + p) % p;
+    for (let y = 0; y < p; y += 1) {
+      if ((y * y) % p === rhs) {
+        const px = half + 2 + Math.floor((x / p) * (W - half - 3));
+        const py = Math.floor((y / p) * (H - 1));
+        ctx.fillStyle = C.acid;
+        ctx.fillRect(px, py, 1, 1);
+      }
+    }
+  }
+  ctx.fillStyle = C.paper;
+  ctx.fillRect(half, 0, 1, H);
+};
+
 const painters: Readonly<Record<string, Painter>> = {
   '01': paintGroups,
   '02': paintRings,
   '03': paintSymmetric,
   '04': paintAsymmetric,
+  '05': paintEllipticCurve,
 };
 
 export const mountHero = (root: HTMLElement): void => {
