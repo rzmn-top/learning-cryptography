@@ -24,10 +24,10 @@
   /* VT323 — пиксельная латиница; кириллица падает в PT Mono */
   --font-pixel: 'VT323', 'PT Mono', monospace;
 
-  --size-body: 1.1rem;
+  --size-body: 0.98rem;
   --leading-body: 1.65;
-  --measure: 46rem; /* ширина колонки текста */
-  --margin-col: 13rem; /* колонка маргиналий */
+  --measure: 40rem; /* ширина колонки текста */
+  --panel-w: 26rem; /* панель доказательств (split screen) */
 
   --shadow-punk: 4px 4px 0 var(--ink);
 }

@@ -1,5 +1,5 @@
 /* ============================================================
-   База: бумага, сетка, типографика.
+   База: бумага, layout (одна колонка ⇄ split screen), типографика.
    ============================================================ */
 
 *,
@@ -19,25 +19,41 @@ body {
   line-height: var(--leading-body);
   color: var(--ink);
   background-color: var(--paper);
-  /* dotted grid — миллиметровка, чуть заметная */
   background-image: radial-gradient(var(--rule) 1px, transparent 1px);
   background-size: 26px 26px;
 }
 
-/* ---- каркас страницы: текст + колонка маргиналий ---- */
+/* ---- layout: по умолчанию одна центральная колонка;
+        body.split — колонка + панель доказательств ---- */
 
-.page {
-  max-width: calc(var(--measure) + var(--margin-col) + 4rem);
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  max-width: 90rem;
   margin: 0 auto;
-  padding: 2rem 1.5rem 6rem;
+  padding: 0 1.5rem 6rem;
+  transition: grid-template-columns 0.25s ease;
+}
+
+body.split .layout {
+  grid-template-columns: minmax(0, 1fr) var(--panel-w);
 }
 
 .prose {
+  width: 100%;
   max-width: var(--measure);
+  margin: 0 auto;
   background: var(--paper);
   outline: 1px solid var(--rule);
-  padding: 3rem clamp(1.5rem, 5vw, 4rem) 4rem;
-  position: relative;
+  padding: 3rem clamp(1.5rem, 4vw, 3.4rem) 4rem;
+}
+
+/* на узких экранах панель — оверлей справа */
+@media (max-width: 68rem) {
+  body.split .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 p {
@@ -66,7 +82,7 @@ strong {
 h1 {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   line-height: 1.1;
   margin: 0.4rem 0 0.8rem;
   letter-spacing: -0.01em;
@@ -75,22 +91,21 @@ h1 {
 h2 {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 1.55rem;
-  margin: 2.8em 0 0.8em;
+  font-size: 1.4rem;
+  margin: 2.6em 0 0.8em;
   padding-top: 0.6em;
   border-top: 3px solid var(--ink);
-  position: relative;
 }
 
 h2 .secno {
   font-family: var(--font-pixel);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--pink);
   margin-right: 0.5em;
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   margin: 2em 0 0.6em;
 }
 
@@ -100,27 +115,9 @@ h3 {
   margin-bottom: 3rem;
 }
 
-/* строка метаданных: official but fake */
-.doc-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2em 1.8em;
-  font-family: var(--font-pixel);
-  font-size: 1rem;
-  color: var(--ink-soft);
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
-  padding: 0.25em 0;
-  margin-top: 1.2rem;
-}
-
-.doc-meta .ok {
-  color: var(--acid-deep);
-}
-
 .chapter-no {
   font-family: var(--font-pixel);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--paper);
   background: var(--ink);
   display: inline-block;
@@ -138,6 +135,24 @@ h3 {
   text-align: left;
 }
 
+/* строка метаданных: official but fake */
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1.8em;
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 0.25em 0;
+  margin-top: 1.2rem;
+}
+
+.doc-meta .ok {
+  color: var(--acid-deep);
+}
+
 /* ---- ASCII-разделитель ---- */
 
 .divider {
@@ -149,39 +164,7 @@ h3 {
   user-select: none;
 }
 
-/* ---- маргиналии ---- */
-
-.margin-note {
-  font-family: var(--font-pixel);
-  font-size: 1.02rem;
-  line-height: 1.35;
-  color: var(--ink-soft);
-  border-top: 1px solid var(--rule);
-  padding-top: 0.4em;
-}
-
-@media (min-width: 74rem) {
-  .margin-note {
-    float: right;
-    clear: right;
-    width: var(--margin-col);
-    margin-right: calc(-1 * var(--margin-col) - 3rem);
-    margin-top: 0.2em;
-    transform: rotate(0.4deg);
-  }
-}
-
-@media (max-width: 73.99rem) {
-  .margin-note {
-    display: block;
-    max-width: 24rem;
-    margin: 1em 0;
-    background: var(--paper-deep);
-    padding: 0.5em 0.8em;
-  }
-}
-
-/* ---- код и inline-math не трогаем: KaTeX сам ---- */
+/* ---- код ---- */
 
 code {
   font-family: var(--font-pixel);
@@ -197,8 +180,10 @@ code {
   gap: 1rem;
   align-items: baseline;
   font-family: var(--font-pixel);
-  font-size: 1.15rem;
-  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 2.5rem;
 }
 
 .top-nav a {
@@ -225,7 +210,7 @@ code {
   justify-content: space-between;
   margin-top: 4rem;
   font-family: var(--font-pixel);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
 
 .chapter-nav a {

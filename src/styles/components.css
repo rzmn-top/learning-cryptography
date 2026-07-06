@@ -124,6 +124,111 @@
   border-color: var(--acid-deep);
 }
 
+/* ---- кликабельные утверждения (claims) ---- */
+
+.claim {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: inherit;
+  border-bottom: 2px dotted var(--pink);
+  transition: background 0.12s ease;
+}
+
+.claim::after {
+  content: '†';
+  font-family: var(--font-pixel);
+  font-size: 0.75em;
+  color: var(--pink);
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+.claim:hover,
+.claim.active {
+  background: var(--acid);
+}
+
+.claim:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+}
+
+/* ---- панель доказательств (split screen) ---- */
+
+.proof-panel {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  box-shadow: var(--shadow-punk);
+  align-self: start;
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.proof-panel-title {
+  font-family: var(--font-pixel);
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+  background: var(--ink);
+  color: var(--acid);
+  padding: 0.3em 0.5em 0.3em 0.8em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+}
+
+.proof-panel-title .panel-close {
+  font-family: var(--font-pixel);
+  font-size: 1rem;
+  background: none;
+  color: var(--paper);
+  border: 1px solid var(--paper);
+  padding: 0 0.45em;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.proof-panel-title .panel-close:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+}
+
+.proof-panel-body {
+  padding: 1rem 1.2rem 1.4rem;
+  overflow-y: auto;
+  font-size: 0.94em;
+}
+
+.proof-panel-body .env {
+  margin: 1em 0;
+}
+
+.proof-panel-body > section > p:first-child {
+  margin-top: 0;
+}
+
+/* на узких экранах — оверлей */
+@media (max-width: 68rem) {
+  .proof-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(28rem, 100vw);
+    max-height: none;
+    z-index: 50;
+    box-shadow: -10px 0 30px rgba(20, 18, 14, 0.35);
+  }
+}
+
 /* ---- крипто-мораль: зачем это в криптографии ---- */
 
 .crypto-morale {

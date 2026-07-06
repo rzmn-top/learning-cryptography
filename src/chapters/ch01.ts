@@ -9,11 +9,13 @@ import '../styles/components.css';
 
 import { renderMath } from '../ui/katex';
 import { mountAll } from '../ui/widgets';
+import { initAsidePanel } from '../ui/aside-panel';
 import { mountCayleyTable } from '../widgets/cayley-table';
 import { mountOrbit } from '../widgets/orbit';
 
 const main = (): void => {
   renderMath(document.body);
+  initAsidePanel();
   mountAll({
     'cayley-table': mountCayleyTable,
     orbit: mountOrbit,
